@@ -1,0 +1,9 @@
+.cancellable {
+    color: #74788d !important;
+    cursor: pointer;
+}
+
+#json-editor {
+    height: 400px;
+    width: 100%;
+}
