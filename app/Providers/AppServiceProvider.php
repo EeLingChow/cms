@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Validators\CustomCheckValidator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +24,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        app('validator')->resolver(function ($translator, $data, $rules, $messages = array(), $customAttributes = array()) {
+            return new CustomCheckValidator($translator, $data, $rules, $messages, $customAttributes);
+        });
     }
 }

@@ -14,6 +14,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::post('/change-password', ['uses' => "Api\AdminController@changePassword"])
+        ->name('api.admins.change-password')
+        ->middleware("audit:admin,change-password");
+
+    add_api_module_routes('admin', [
+        'prefix' => 'admins',
+        'name' => 'admins',
+    ]);
+
+    add_api_module_routes('floor', [
+        'prefix' => 'floors',
+        'name' => 'floors',
+    ]);
+
+    add_api_module_routes('category', [
+        'prefix' => 'categories',
+        'name' => 'categories',
+    ]);
 });

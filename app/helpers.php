@@ -108,3 +108,102 @@ function api_token()
 {
     return session()->get('api_token');
 }
+
+if (!function_exists('add_module_routes')) {
+    function add_module_routes($moduleKey, $options, $extraRoutes = null)
+    {
+        $defaults = [
+            'prefix' => '',
+            'middleware' => ["module:{$moduleKey}"],
+            'key' => $moduleKey,
+            'name' => '',
+            'controller' => 'Admin\\' . ucfirst($moduleKey) . 'Controller',
+        ];
+
+        $options = array_merge($defaults, $options);
+
+        Route::group(['prefix' => $options['prefix'], 'middleware' => $options['middleware']], function () use ($options, $extraRoutes) {
+            $module = $options['key'];
+            $moduleName = $options['name'];
+            $controller = $options['controller'];
+
+            //Listing
+            Route::get('/', ['uses' => "{$controller}@index"])->name("{$moduleName}.list")
+                ->middleware("permission:{$module},read");
+
+            //Create
+            Route::get('/create', ['uses' => "{$controller}@create"])->name("{$moduleName}.create")
+                ->middleware("permission:{$module},create");
+            //Editing
+            Route::get('/edit/{id}', ['uses' => "{$controller}@edit"])->name("{$moduleName}.edit")
+                ->where('id', '\d+')
+                ->middleware("permission:{$module},update");
+
+            if ($extraRoutes) {
+                $extraRoutes();
+            }
+        });
+    }
+}
+
+if (!function_exists('add_api_module_routes')) {
+    function add_api_module_routes($moduleKey, $options, $extraRoutes = null)
+    {
+        $defaults = [
+            'prefix' => '',
+            'middleware' => [],
+            'key' => $moduleKey,
+            'name' => '',
+            'exclude' => [],
+            'controller' => 'Api\\' . ucfirst($moduleKey) . 'Controller',
+        ];
+
+        $options = array_merge($defaults, $options);
+
+        Route::group(['prefix' => $options['prefix']], function () use ($options, $extraRoutes) {
+            $module = $options['key'];
+            $moduleName = $options['name'];
+            $controller = $options['controller'];
+
+            //Listing
+            if (!in_array('listing', $options['exclude'])) {
+                Route::get('/', ['uses' => "{$controller}@index"])
+                    ->name("api.{$moduleName}.list")
+                    ->middleware("permission:{$module},read");
+
+                //show
+                Route::get('/{id}', ['uses' => "{$controller}@show"])
+                    ->name("api.{$moduleName}.show")
+                    ->where('id', '\d+')
+                    ->middleware("permission:{$module},read");
+            }
+
+            //Create
+            if (!in_array('create', $options['exclude'])) {
+                Route::post('/create', ['uses' => "{$controller}@store"])
+                    ->name("api.{$moduleName}.store")
+                    ->middleware("permission:{$module},create", "audit:{$module},create");
+            }
+
+            //Update
+            if (!in_array('update', $options['exclude'])) {
+                Route::post('/update/{id}', ['uses' => "{$controller}@update"])
+                    ->name("api.{$moduleName}.update")
+                    ->where('id', '\d+')
+                    ->middleware("permission:{$module},update", "audit:{$module},update");
+            }
+
+            //Delete
+            if (!in_array('delete', $options['exclude'])) {
+                Route::post('/delete/{id}', ['uses' => "{$controller}@delete"])
+                    ->name("api.{$moduleName}.delete")
+                    ->where('id', '\d+')
+                    ->middleware("permission:{$module},delete", "audit:{$module},delete");
+            }
+
+            if ($extraRoutes) {
+                $extraRoutes();
+            }
+        });
+    }
+}
