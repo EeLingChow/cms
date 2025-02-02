@@ -31,4 +31,14 @@ Route::group(['middleware' => 'auth:admin'], function () use ($baseFolder) {
         'prefix' => 'categories',
         'name' => 'categories',
     ]);
+
+    add_module_routes('shop', [
+        'prefix' => 'shops',
+        'name' => 'shops',
+    ]);
+
+    add_module_routes('auditLog', [
+        'prefix' => 'audit-logs',
+        'name' => 'audit-logs',
+    ]);
 });

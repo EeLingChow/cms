@@ -38,13 +38,9 @@ $now = $carbon->now()->format('Y-m-d\TH:i');
             @case('multiselect')
             <select name="{{ $key }}" id="input-{{ $key }}" class="form-control {{ $classes }}" {{ implode(' ', $attributes) }}>
                 @if (isset($settings['options']))
-                    @if ($key == 'leagues[]')
+                    @if ($key == 'categories[]')
                         @foreach ($settings['options'] as $k => $v)
-                            <option value="{{ $k }}" {{ !empty($data) && in_array($k, $data->leagues->pluck('id')->toArray()) ? 'selected' : '' }}>{{ $v }}</option>
-                        @endforeach
-                    @elseif ($key == 'sites[]') 
-                        @foreach ($settings['options'] as $k => $v)
-                            <option value="{{ $k }}" {{ !empty($data) && in_array($k, explode(',', $data->assigned_site)) ? 'selected' : '' }}>{{ $v }}</option>
+                            <option value="{{ $k }}" {{ !empty($data) && in_array($k, $data->categories->pluck('id')->toArray()) ? 'selected' : '' }}>{{ $v }}</option>
                         @endforeach
                     @endif
                 @endif

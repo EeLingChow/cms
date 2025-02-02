@@ -33,4 +33,14 @@ Route::group(['middleware' => 'auth:api'], function () {
         'prefix' => 'categories',
         'name' => 'categories',
     ]);
+
+    add_api_module_routes('shop', [
+        'prefix' => 'shops',
+        'name' => 'shops',
+    ]);
+
+    add_api_module_routes('auditLog', [
+        'prefix' => 'audit-logs',
+        'name' => 'audit-logs',
+    ]);
 });

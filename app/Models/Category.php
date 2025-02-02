@@ -33,10 +33,10 @@ class Category extends ApiModel
         ];
     }
 
-    // public function shops()
-    // {
-    //     return $this->belongsToMany('App\Models\Shop', 'shop_assignment', 'floor_id', 'shop_id');
-    // }
+    public function shops()
+    {
+        return $this->belongsToMany('App\Models\Shop', 'category_assignment');
+    }
 
     public function getChoices()
     {

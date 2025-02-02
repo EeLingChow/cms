@@ -88,8 +88,8 @@ class Admin extends ApiModel implements AuthenticatableContract, AuthorizableCon
         }
 
         $module_assignment = [
-            'superadmin' => 'admin|floor|category',
-            'admin' => 'admin|floor|category',
+            'superadmin' => 'admin|floor|category|shop|auditLog',
+            'admin' => 'admin|floor|category|shop',
         ];
 
         $return = [];
@@ -130,6 +130,16 @@ class Admin extends ApiModel implements AuthenticatableContract, AuthorizableCon
                 'name' => ['Categories'],
                 'route' => ['categories.list'],
                 'master' => 'Categories',
+            ],
+            'shop' => [
+                'name' => ['Shops'],
+                'route' => ['shops.list'],
+                'master' => 'Shops',
+            ],
+            'auditLog' => [
+                'name' => ['Audit Logs'],
+                'route' => ['audit-logs.list'],
+                'master' => 'Super Admin',
             ],
         ];
 
