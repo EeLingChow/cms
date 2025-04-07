@@ -20,7 +20,10 @@ Route::group(['middleware' => 'auth:admin'], function () use ($baseFolder) {
     add_module_routes('admin', [
         'prefix' => 'admins',
         'name' => 'admins',
-    ]);
+    ], function () {
+        Route::get('/customize-permission/{id}', ['uses' => "Admin\AdminController@customizePermission"])->name("admins.customize-permission")
+            ->where('id', '\d+');
+    });
 
     add_module_routes('floor', [
         'prefix' => 'floors',
@@ -35,6 +38,16 @@ Route::group(['middleware' => 'auth:admin'], function () use ($baseFolder) {
     add_module_routes('shop', [
         'prefix' => 'shops',
         'name' => 'shops',
+    ]);
+
+    add_module_routes('module', [
+        'prefix' => 'modules',
+        'name' => 'modules',
+    ]);
+
+    add_module_routes('profile', [
+        'prefix' => 'profiles',
+        'name' => 'profiles',
     ]);
 
     add_module_routes('auditLog', [

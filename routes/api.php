@@ -22,7 +22,11 @@ Route::group(['middleware' => 'auth:api'], function () {
     add_api_module_routes('admin', [
         'prefix' => 'admins',
         'name' => 'admins',
-    ]);
+    ], function () {
+        Route::post('/api/customize-permission/{id}', ['uses' => "Api\AdminController@apiCustomizePermission"])->name("admins.api.customize-permission")
+            ->where('id', '\d+')
+            ->middleware("audit:admin,customize-permission");
+    });
 
     add_api_module_routes('floor', [
         'prefix' => 'floors',
@@ -37,6 +41,16 @@ Route::group(['middleware' => 'auth:api'], function () {
     add_api_module_routes('shop', [
         'prefix' => 'shops',
         'name' => 'shops',
+    ]);
+
+    add_api_module_routes('module', [
+        'prefix' => 'modules',
+        'name' => 'modules',
+    ]);
+
+    add_api_module_routes('profile', [
+        'prefix' => 'profiles',
+        'name' => 'profiles',
     ]);
 
     add_api_module_routes('auditLog', [

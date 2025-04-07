@@ -76,12 +76,6 @@ class ApiModel extends Model
             $data = array_filter($request->all(), 'strlen');
         }
 
-        if (isset($data['password'])) {
-            $this->password = $data['password'];
-        }
-
-        $this->applySave($request->user());
-
         $this->fill($data);
     }
 

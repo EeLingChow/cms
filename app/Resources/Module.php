@@ -4,7 +4,7 @@ namespace App\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class Admin extends JsonResource
+class Module extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,18 +17,28 @@ class Admin extends JsonResource
     {
         $data = [
             'id' => $this->id,
-            'username' => $this->username,
-            'fullname' => $this->fullname,
+            'master_id' => $this->master_id,
+            'name' => $this->name,
+            'modulekey' => $this->modulekey,
+            'sequence' => $this->sequence,
+            'icon' => $this->icon,
+            'route' => $this->route,
             'is_superadmin' => $this->is_superadmin,
-            'profile' => null,
+            'is_master' => $this->is_master,
+            'is_hidden' => $this->is_hidden,
+            'master' => null,
             'meta' => [
                 'created'   => $this->created_at ? $this->created_at->format('Y-m-d H:i:s') : null,
                 'updated'   => $this->updated_at ? $this->updated_at->format('Y-m-d H:i:s') : null,
+                'by' => $this->updated_by,
             ],
         ];
 
-        if ($this->profile) {
-            $data['profile'] = new Profile($this->profile);
+        if ($this->master) {
+            $data['master'] = [
+                'id' => $this->master->id,
+                'name' => $this->master->name,
+            ];
         }
 
         return $data;

@@ -51,11 +51,11 @@
         <div id="kt_aside_menu" class="kt-aside-menu kt-scroll ps ps--active-y" data-ktmenu-vertical="1"
             data-ktmenu-scroll="1" data-ktmenu-dropdown-timeout="500" style="height: 834px; overflow: hidden;">
             <ul class="kt-menu__nav ">
-                @foreach ($_menu as $master => $module)
+                @foreach ($_menu as $module)
                     <li class="kt-menu__item kt-menu__item--submenu {{ $q = is_current_master($module['routes']) }}"
                         aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
                         <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
-                            <span class="kt-menu__link-text">{{ $master }}</span>
+                            <span class="kt-menu__link-text">{{ $module['master']['name'] }}</span>
                             <i class="kt-menu__ver-arrow la la-angle-right"></i>
                         </a>
                         <div class="kt-menu__submenu " kt-hidden-height="80"
@@ -64,7 +64,7 @@
                             <ul class="kt-menu__subnav">
                                 <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true">
                                     <span class="kt-menu__link">
-                                        <span class="kt-menu__link-text">{{ $master }}</span>
+                                        <span class="kt-menu__link-text">{{ $module['master']['name'] }}</span>
                                     </span>
                                 </li>
                                 @foreach ($module['submodules'] as $submodule)

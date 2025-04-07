@@ -107,68 +107,6 @@ function doSearch() {
     }
 }
 
-function doExport(id = null) {
-    var url = $("#export").attr("data-export-url") + "?";
-
-    if (id) {
-        url += "id=" + id + "&";
-    }
-
-    $("input,select", $("#filter-wrapper")).each(function () {
-        if ($(this).val().length > 0) {
-            url += $(this).attr("name") + "=" + $(this).val() + "&";
-        }
-    });
-
-    url += "api_token=" + api_token;
-
-    window.open(url, "_blank");
-}
-
-function loadDependents(data = null) {
-    let _this = $(".dependent#input-league_id");
-
-    $.ajax({
-        url: _this.attr("data-href") + "?api_token=" + api_token,
-        type: "post",
-        dataType: "json",
-        data: {
-            league_id: _this.val(),
-            _token: $("#csrf-token").attr("content"),
-        },
-        success: (json) => {
-            if (json.status == 200) {
-                var htmlA = '';
-                var htmlB = '';
-
-                for (key in json.data) {
-                    var selectedA = '';
-                    var selectedB = '';
-
-                    if (data) {
-                        if (data.team_a_id == key) {
-                            var selectedA = 'selected';
-                        } else if (data.team_b_id == key) {
-                            var selectedB = 'selected';
-                        }
-                    }
-
-                    htmlA += "<option value='" + key + "'" + selectedA + ">" + json.data[key] + "</option>";
-                    htmlB += "<option value='" + key + "'" + selectedB + ">" + json.data[key] + "</option>";
-                }
-                
-                $(".dependent#input-team_a_id").html(htmlA);
-                $(".dependent#input-team_b_id").html(htmlB);
-            }
-        },
-        error: (err) => {
-            console.error(err);
-            var json = err.responseJSON;
-            toastr.error(json.message);
-        },
-    });
-}
-
 $(document).ready(function () {
     toastr.options = {
         closeButton: true,
@@ -322,37 +260,5 @@ $(document).ready(function () {
         });
 
         return false;
-    });
-
-    $("body").delegate(".cancellable", "click", function () {
-        let _this = $(this);
-        _confirm(
-            'Do you want to perform <strong style="color:red;">CANCEL</strong> action for the match?',
-            () => {
-                $.ajax({
-                    url: _this.attr("data-href") + "?api_token=" + api_token,
-                    type: "post",
-                    dataType: "json",
-                    data: {
-                        _token: $("#csrf-token").attr("content"),
-                    },
-                    statusCode: {
-                        204: (xhr) => {
-                            toastr.success("Match Successfully Cancelled.");
-                            _ctrl.dt.load();
-                        },
-                    },
-                    error: (err) => {
-                        console.error(err);
-                        var json = err.responseJSON;
-                        toastr.error(json.message);
-                    },
-                });
-            }
-        );
-    });
-
-    $("body").delegate(".dependent#input-league_id", "change", function () {
-        loadDependents()
     });
 });

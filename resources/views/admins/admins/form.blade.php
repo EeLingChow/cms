@@ -1,4 +1,7 @@
 @php
+$profile = new App\Models\Profile;
+$profiles = $profile->getChoices(admin());
+
 $form = [
     'username' => [
         'label' => 'User Name',
@@ -22,17 +25,14 @@ $form = [
             'required' => true,
         ],
     ],
-    'role' => [
-        'label' => 'Role',
-        'type' => 'select',
-        'options' => [
-            'superadmin' => 'Superadmin',
-            'admin' => 'Admin',
-        ],
-        'attributes' => [
-            'required' => true,
-        ],
-    ],
+	'profile_id' => [
+		'label' => 'Profile',
+		'type' => 'select',
+		'options' => $profiles,
+		'attributes' => [
+			'required' => true,
+		],
+	],
 ];
 
 @endphp

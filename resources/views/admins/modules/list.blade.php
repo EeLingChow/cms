@@ -1,5 +1,5 @@
 @php
-$pageTitle = 'Admins';
+$pageTitle = 'Modules';
 @endphp
 
 @extends('admins.layout')
@@ -104,18 +104,28 @@ $pageTitle = 'Admins';
                             textAlign: 'center',
                         },
                         {
-                            field: 'username',
-                            title: 'Username',
+                            field: 'name',
+                            title: 'Module Name',
                             textAlign: 'center',
                         },
                         {
-                            field: 'fullname',
-                            title: 'Name',
+                            field: 'module_key',
+                            title: 'Module Key',
                             textAlign: 'center',
                         },
                         {
-                            field: 'profile.name',
-                            title: 'Profile',
+                            field: 'route',
+                            title: 'Route Name',
+                            textAlign: 'center',
+                        },
+                        {
+                            field: 'meta.created',
+                            title: 'Created At',
+                            textAlign: 'center',
+                        },
+                        {
+                            field: 'meta.updated',
+                            title: 'Last Updated',
                             textAlign: 'center',
                         },
                         {
@@ -126,32 +136,19 @@ $pageTitle = 'Admins';
                             overflow: 'visible',
                             autoHide: false,
                             template: function(row) {
-                                var html = '', editRoute = '{{ route("{$modulename}.edit", ['id' => '%ID%']) }}', deleteRoute = '{{ route("api.{$modulename}.delete", ['id' => '%ID%']) }}', pRoute = '{{ route('admins.customize-permission', ['id' => '%ID%']) }}';
-
-                                if (row.id == '{{ admin()->id }}') return '';
-
-                                if (_p.superadmin ) {
-                                html += `<div class="dropdown">
-                                        <a data-toggle="dropdown" class="btn btn-sm btn-clean btn-icon btn-icon-md">
-                                            <i class="la la-cog"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right">
-                                            <a href="${pRoute.replace('%ID%', row.id)}" class="dropdown-item"><i class="la la-edit"></i> Customize Permission</a>
-                                        </div>
-                                    </div>`
-                                }
+                                var html = '',
+                                    editRoute = '{{ route("{$modulename}.edit", ['id' => '%ID%']) }}',
+                                    deleteRoute = '{{ route("api.{$modulename}.delete", ['id' => '%ID%']) }}';
 
                                 if (_p.editable) {
-                                    html += `<a href="${editRoute.replace('%ID%', row.id)}" class="btn btn-sm btn-clean btn-icon btn-icon-sm" title="Edit">\
-                                        <i class="flaticon2-paper"></i>\
-                                    </a>`
+                                    html +=
+                                        `<a href="${editRoute.replace('%ID%', row.id)}" class="btn btn-sm btn-clean btn-icon btn-icon-sm" title="Edit"><i class="flaticon2-paper"></i></a>`
                                 }
 
                                 if (_p.deletable) {
-                                    html += `<a href="javascript:;" data-href="${deleteRoute.replace('%ID%', row.id)}" class="deletable btn btn-sm btn-clean btn-icon btn-icon-sm" title="Delete">\
-                                        <i class="flaticon2-trash"></i>\
-                                    </a>`
-                                }	
+                                    html +=
+                                        `<a href="javascript:;" data-href="${deleteRoute.replace('%ID%', row.id)}" class="deletable btn btn-sm btn-clean btn-icon btn-icon-sm" title="Delete"><i class="flaticon2-trash"></i></a>`
+                                }
 
                                 return html;
                             }

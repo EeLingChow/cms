@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 
 class Admin extends ApiModel implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
@@ -20,15 +21,21 @@ class Admin extends ApiModel implements AuthenticatableContract, AuthorizableCon
 
     protected $table = 'admin';
 
+    //default value
+    protected $attributes = [
+        'is_superadmin' => false,
+    ];
+
     protected $fillable = [
+        'profile_id',
         'username',
         'fullname',
-        'role',
+        'is_superadmin',
     ];
 
     protected $hidden = [
         'password',
-        'api_token',
+        'api_token'
     ];
 
 
@@ -38,11 +45,27 @@ class Admin extends ApiModel implements AuthenticatableContract, AuthorizableCon
 
         $this->routename = 'admins';
         $this->rules = [
+            'profile_id' => 'required',
             'username' => 'required|unique:admin,username,[id],id|max:50|alpha_num',
             'password' => 'required|min:6|max:255',
             'fullname' => 'required|max:255',
-            'role' => 'required|max:50',
         ];
+    }
+
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = app('hash')->make($value);
+    }
+
+    public function profile()
+    {
+        return $this->belongsTo('App\Models\Profile');
+    }
+
+    public function modules()
+    {
+        return $this->belongsToMany('App\Models\Module', 'module_assignment', 'admin_id', 'module_id')
+            ->withPivot('plusminus', 'permission');
     }
 
     public function repName()
@@ -69,7 +92,6 @@ class Admin extends ApiModel implements AuthenticatableContract, AuthorizableCon
         $permissionCases = ['delete', 'update', 'create', 'read'];
         $hasModule = in_array($modulekey, array_keys($modules));
 
-
         if ($permission == null || !in_array($permission, $permissionCases) && !$hasModule) {
             //check module key only
             return $hasModule;
@@ -87,22 +109,18 @@ class Admin extends ApiModel implements AuthenticatableContract, AuthorizableCon
             return $this->cachedModules;
         }
 
-        $module_assignment = [
-            'superadmin' => 'admin|floor|category|shop|auditLog',
-            'admin' => 'admin|floor|category|shop',
-        ];
-
         $return = [];
 
-        $modules = explode('|', $module_assignment[$this->role]);
-        foreach ($modules as $m) {
-            switch ($this->role) {
-                case 'superadmin':
-                    $return[$m] = 15;
-                    break;
-                case 'admin':
-                    $return[$m] = 7;
-                    break;
+        $profile = $this->profile;
+        foreach ($profile->modules as $m) {
+            $return[$m->$returnKey] = $m->pivot->permission;
+        }
+
+        foreach ($this->modules as $m) {
+            if ($m->pivot->plusminus == 1) {
+                $return[$m->$returnKey] = $m->pivot->permission;
+            } else if ($m->plusminus == -1) {
+                unset($return[$m->$returnKey]);
             }
         }
 
@@ -115,52 +133,77 @@ class Admin extends ApiModel implements AuthenticatableContract, AuthorizableCon
             return $this->cachedMenuLinks;
         }
 
-        $data = [
-            'admin' => [
-                'name' => ['Admins'],
-                'route' => ['admins.list'],
-                'master' => 'Super Admin',
-            ],
-            'floor' => [
-                'name' => ['Floors'],
-                'route' => ['floors.list'],
-                'master' => 'Floors',
-            ],
-            'category' => [
-                'name' => ['Categories'],
-                'route' => ['categories.list'],
-                'master' => 'Categories',
-            ],
-            'shop' => [
-                'name' => ['Shops'],
-                'route' => ['shops.list'],
-                'master' => 'Shops',
-            ],
-            'auditLog' => [
-                'name' => ['Audit Logs'],
-                'route' => ['audit-logs.list'],
-                'master' => 'Super Admin',
-            ],
-        ];
+        $data = [];
+        $keys = $this->allowedModules();
 
-        $return = [];
-        $modules = $this->allowedModules();
+        if (!empty($keys)) {
+            $query = Module::query();
 
-        if (!empty($modules)) {
-            foreach ($modules as $m => $permission) {
+            $modules = $query->where('is_hidden', false)
+                ->where(function ($query) use ($keys) {
+                    $query->orWhere('is_master', true)
+                        ->orWhereIn('modulekey', array_keys($keys));
+                })
+                ->orderBy('is_master', 'desc')
+                ->orderBy('sequence', 'asc')
+                ->get();
 
-                for ($i = 0; $i < count($data[$m]['name']); $i++) {
-                    $parsed = [
-                        'name' => $data[$m]['name'][$i],
-                        'route' => $data[$m]['route'][$i],
+            foreach ($modules as $m) {
+                $masterId = $m->master_id;
+
+                if (!array_key_exists($masterId, $data)) {
+                    $data[$masterId] = [
+                        'submodules' => [],
+                        'routes' => [],
                     ];
+                }
 
-                    $return[$data[$m]['master']]['submodules'][] = $parsed;
-                    $return[$data[$m]['master']]['routes'][] = $data[$m]['route'][$i];
+                $parsed = [
+                    'name' => $m->name,
+                    'icon' => $m->icon,
+                    'route' => $m->route,
+                ];
+
+                try {
+
+                    if (!empty($m->route)) {
+                        $r = route($m->route);
+                    }
+
+                    if (!$m->is_master) {
+                        $data[$masterId]['submodules'][] = $parsed;
+
+                        if (!empty($m->route)) {
+                            $data[$masterId]['routes'][] = $m->route;
+                        }
+                    } else {
+                        $data[$masterId]['master'] = $parsed;
+                    }
+                } catch (\Exception $e) {
                 }
             }
         }
 
+        $return = [];
+        foreach ($data as $masterId => $module) {
+            if (!empty($module['submodules'])) {
+                $return[$masterId] = $module;
+            }
+        }
+
         return $this->cachedMenuLinks = $return;
+    }
+
+    public function fillFromRequest(Request $request, $data = null)
+    {
+        if (!$data) {
+            $data = array_filter($request->all(), 'strlen');
+        }
+
+        if (isset($data['password'])) {
+            $this->password = $data['password'];
+        }
+
+        $this->fill($data);
     }
 }

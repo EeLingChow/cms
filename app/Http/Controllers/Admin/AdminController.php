@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Admin\BaseController;
 use Illuminate\Http\Request;
-
+use App\Models\Module;
 use Validator;
 use Auth;
 
@@ -13,6 +13,7 @@ class AdminController extends BaseController
     public function __construct()
     {
         parent::__construct();
+        $this->model = 'App\Models\Admin';
         $this->modulekey = 'admin';
         $this->moduleName = 'admins';
         $this->viewFolder = 'admins.admins';
@@ -30,6 +31,44 @@ class AdminController extends BaseController
         $actionMethod = 'post';
 
         return view("{$this->viewFolder}.change-password", compact('actionRoute', 'actionMethod'));
+    }
+
+    public function customizePermission($id, Request $request)
+    {
+        $model = new $this->model;
+        $query = $this->model::query()->where('id', $id);
+        $model->apply($request->user(), $query);
+
+        $data = $query->first();
+
+        if (!$data) {
+            return $this->error(404, 'Record Not Found');
+        }
+
+        $module = new Module;
+        $module->setAppUser($request->user());
+        $modules = $module->getModuleList();
+
+        $profileModules = [];
+        foreach ($data->profile->modules as $m) {
+            $binary = str_pad(decbin($m->pivot->permission) . '', 4, '0', STR_PAD_LEFT);
+            $profileModules[$m->id] = $binary;
+        }
+
+        $ams = $data->modules;
+
+        $adminModules = [];;
+        foreach ($ams as $m) {
+
+            $binary = str_pad(decbin($m->pivot->permission) . '', 4, '0', STR_PAD_LEFT);
+            $adminModules[$m->id] = [
+                'module_id' => $m->id,
+                'permission' => $binary,
+                'plusminus' => $m->pivot->plusminus,
+            ];
+        }
+
+        return view("{$this->viewFolder}.customize-permission", compact('adminModules', 'modules', 'data', 'id', 'profileModules'));
     }
 
     public function login(Request $request)

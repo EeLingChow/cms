@@ -13,16 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('admin', function (Blueprint $table) {
+        Schema::create('profile', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('username', 50)->unique();
-            $table->string('password', 255);
-            $table->string('api_token', 80)->unique()->nullable()->default(null);
-            $table->string('fullname', 255);
-            $table->string('role', 50);
-            $table->dateTime('last_login_at')->nullable();
-            $table->timestamps();
+            $table->string('name', 255);
+            $table->boolean('is_superadmin')->default(false);
+            $table->string('updated_by', 50)->nullable();
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 
@@ -33,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('admin');
+        Schema::dropIfExists('profile');
     }
 };

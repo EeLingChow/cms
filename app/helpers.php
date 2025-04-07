@@ -73,20 +73,6 @@ function rearrange_form($form, $keys)
     return $parsed;
 }
 
-function reverse_geocode($lat, $long)
-{
-    $url = "https://api.bigdatacloud.net/data/reverse-geocode-client?latitude={$lat}&longitude={$long}&localityLanguage=en";
-    $data = file_get_contents($url);
-
-    $json = json_decode($data, true);
-
-    return [
-        'country' => $json['countryName'],
-        'state' => $json['locality'],
-        'loc' => implode(' ', [$json['locality'], $json['countryName']]) . '*',
-    ];
-}
-
 function admin()
 {
     return auth('admin')->user();

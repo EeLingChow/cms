@@ -18,10 +18,11 @@ class AdminSeeder extends Seeder
         DB::table('admin')->insert([
             [
                 'id' => 1,
+                'profile_id' => 1,
                 'username' => 'admin',
                 'password' => bcrypt('123qwe'),
                 'fullname' => 'Admin',
-                'role' => 'superadmin',
+                'is_superadmin' => true,
             ],
         ]);
     }
