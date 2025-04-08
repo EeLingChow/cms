@@ -38,6 +38,11 @@ class Shop extends ApiModel
         ];
     }
 
+    public function floor()
+    {
+        return $this->belongsTo('App\Models\Floor');
+    }
+
     public function categories()
     {
         return $this->belongsToMany('App\Models\Category', 'category_assignment', 'shop_id', 'category_id');
