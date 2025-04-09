@@ -7,6 +7,7 @@ use App\Resources\GetAllShops;
 use App\Resources\SearchShopsByCategory;
 use App\Models\Category;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -26,6 +27,11 @@ class ShopController extends RestfulController
         $shops = $this->model::with(['floor', 'categories'])
             ->orderBy('name', 'asc')
             ->get();
+
+        // Store data in cache
+        // Cache::put('test', $shops, 600);
+        // $value = Cache::get('test');
+        // return $value;
 
         $collections = GetAllShops::collection($shops);
 
