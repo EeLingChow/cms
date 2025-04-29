@@ -18,14 +18,18 @@ class Shop extends JsonResource
         $data = [
             'id' => $this->id,
             'name' => $this->name,
-            'categories' => null,
-            'floor' => $this->level,
+            'categories' => [],
+            'floor' => null,
             'meta' => [
                 'created'   => $this->created_at ? $this->created_at->format('Y-m-d H:i:s') : null,
                 'updated'   => $this->updated_at ? $this->updated_at->format('Y-m-d H:i:s') : null,
                 'by' => $this->updated_by,
             ],
         ];
+
+        if ($this->floor) {
+            $data['floor'] = new Floor($this->floor);
+        }
 
         if ($this->categories) {
             foreach ($this->categories as $c) {

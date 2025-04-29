@@ -17,8 +17,14 @@ use Illuminate\Support\Facades\Route;
 Route::get('/shops/all', ['uses' => "Api\ShopController@getAllShops"])
     ->name("api.shops.all");
 
+Route::get('/shops/show', ['uses' => "Api\ShopController@getShopDetail"])
+    ->name("api.shops.detail");
+
 Route::post('/shops/search-by-category', ['uses' => "Api\ShopController@searchByCategory"])
     ->name("api.shops.search-by-category");
+
+Route::get('/categories/all', ['uses' => "Api\CategoryController@getAllCategories"])
+    ->name("api.categories.all");
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/change-password', ['uses' => "Api\AdminController@changePassword"])
