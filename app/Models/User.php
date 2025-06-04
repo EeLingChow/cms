@@ -41,4 +41,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function bookmarkedShops()
+    {
+        return $this->belongsToMany('App\Models\Shop', 'user_bookmark_assignment')->withTimestamps();
+    }
 }

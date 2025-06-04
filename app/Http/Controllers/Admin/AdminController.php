@@ -81,14 +81,14 @@ class AdminController extends BaseController
                 'password' => 'required',
             ]);
 
+            if ($validation->fails()) {
+                return redirect()->back()->withErrors($validation)->withInput();
+            }
+
             if (Auth::guard('admin')->attempt($data)) {
-                $admin = Auth::guard('admin')->user();
-                $token = $admin->refreshToken();
-                $request->session()->put('api_token', $token);
                 return redirect()->route('admins.home');
             } else {
-                return redirect()->back()
-                    ->with('error', 'Invalid Username / Password');
+                return redirect()->back()->with('error', 'Invalid Username / Password');
             }
         }
 
@@ -97,7 +97,9 @@ class AdminController extends BaseController
 
     public function logout(Request $request)
     {
-        $request->session()->flush();
+        Auth::guard('admin')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken(); // generate new scrf token
         return redirect()->route('admins.login');
     }
 }

@@ -9,6 +9,7 @@ use App\Models\Category;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Http\Request;
 use Validator;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class ShopController extends RestfulController
 {
@@ -40,14 +41,28 @@ class ShopController extends RestfulController
         return $this->response(200, $collections);
     }
 
-    public function getAllShops()
+    public function getAllShops(Request $request)
     {
+        $bookmarkedIds = [];
+        $accessToken = $request->bearerToken();
+        if ($accessToken) {
+            $tokenModel = PersonalAccessToken::findToken($accessToken);
+            if ($tokenModel) {
+                $user = $tokenModel->tokenable;
+                if ($user) {
+                    $bookmarkedIds = $user->bookmarkedShops()->pluck('shop.id')->toArray();
+                }
+            }
+        }
+
         $shops = $this->model::with(['floor', 'categories'])
             ->orderBy('name', 'asc')
             ->get();
 
-
-        $collections = Shop::collection($shops);
+        $collections = Shop::collection($shops->map(function ($shop) use ($bookmarkedIds) {
+            $shop->is_bookmarked = in_array($shop->id, $bookmarkedIds);
+            return $shop;
+        }));
 
         return $this->response(200, $collections);
     }

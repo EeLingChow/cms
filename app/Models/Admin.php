@@ -35,7 +35,6 @@ class Admin extends ApiModel implements AuthenticatableContract, AuthorizableCon
 
     protected $hidden = [
         'password',
-        'api_token'
     ];
 
 
@@ -73,18 +72,18 @@ class Admin extends ApiModel implements AuthenticatableContract, AuthorizableCon
         return substr($this->fullname, 0, 1);
     }
 
-    public function refreshToken()
-    {
-        if ($this->id) {
-            $token = Str::random(60);
+    // public function refreshToken()
+    // {
+    //     if ($this->id) {
+    //         $token = Str::random(60);
 
-            $this->api_token = hash('sha256', $token);
-            $this->save();
-            return $token;
-        }
+    //         $this->api_token = hash('sha256', $token);
+    //         $this->save();
+    //         return $token;
+    //     }
 
-        return null;
-    }
+    //     return null;
+    // }
 
     public function permissionAllowed($modulekey, $permission = null)
     {

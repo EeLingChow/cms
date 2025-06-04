@@ -48,6 +48,11 @@ class Shop extends ApiModel
         return $this->belongsToMany('App\Models\Category', 'category_assignment', 'shop_id', 'category_id');
     }
 
+    public function bookmarkedByUsers()
+    {
+        return $this->belongsToMany('App\Models\User', 'user_bookmark_assignment')->withTimestamps();
+    }
+
     public function afterSave(Request $request)
     {
         if ($this->id) {

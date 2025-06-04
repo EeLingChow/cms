@@ -20,6 +20,7 @@ class Shop extends JsonResource
             'name' => $this->name,
             'categories' => [],
             'floor' => null,
+            'is_bookmarked' => $this->is_bookmarked ?? false,
             'meta' => [
                 'created'   => $this->created_at ? $this->created_at->format('Y-m-d H:i:s') : null,
                 'updated'   => $this->updated_at ? $this->updated_at->format('Y-m-d H:i:s') : null,

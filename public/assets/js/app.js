@@ -156,7 +156,7 @@ $(document).ready(function () {
             'Do you want to perform <strong style="color:red;">DELETE</strong> action for the record?',
             () => {
                 $.ajax({
-                    url: _this.attr("data-href") + "?api_token=" + api_token,
+                    url: _this.attr("data-href"),
                     type: "post",
                     dataType: "json",
                     data: {
@@ -214,7 +214,7 @@ $(document).ready(function () {
         };
 
         $.ajax({
-            url: $(this).attr("action") + "?api_token=" + api_token,
+            url: $(this).attr("action"),
             type: "post",
             dataType: "json",
             data: $(this).serialize(),

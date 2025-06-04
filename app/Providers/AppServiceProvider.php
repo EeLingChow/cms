@@ -4,6 +4,9 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Validators\CustomCheckValidator;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Http\Parser\Cookies;
+use Tymon\JWTAuth\Http\Parser\AuthHeaders;
 
 class AppServiceProvider extends ServiceProvider
 {

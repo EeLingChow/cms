@@ -44,11 +44,10 @@ return [
             'driver' => 'session',
             'provider' => 'admins',
         ],
-        'api' => [
-            'driver' => 'token',
-            'provider' => 'admins',
-            'hash' => true,
-        ],
+        // 'sanctum' => [
+        //     'driver' => 'sanctum',
+        //     'provider' => 'users',
+        // ],
     ],
 
     /*

@@ -112,8 +112,6 @@
 
     <!-- begin::Global Config(global config for global JS sciprts) -->
     <script>
-        var api_token = '{{ api_token() }}';
-
         var KTAppOptions = {
             "colors": {
                 "state": {

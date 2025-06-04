@@ -73,7 +73,7 @@ $pageTitle = 'Profiles';
                     source: {
                         read: {
                             method: 'GET',
-                            url: '{{ route("api.{$modulename}.list") }}?api_token={{ api_token() }}',
+                            url: '{{ route("api.{$modulename}.list") }}',
                             pageSize: 100,
                             serverPaging: true,
                             serverFiltering: true,
