@@ -27,11 +27,11 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        //Log::info('🟡 [NO QUEUE] Mail start at: ' . now()); // testing without queue
-        for ($i = 0; $i < 10; $i++) {
+        Log::info('🟡 [NO QUEUE] Mail start at: ' . now()); // testing without queue
+        for ($i = 0; $i < 5; $i++) {
             $user->notify(new NewUserRegistered($user));
         }
-        //Log::info('🟡 [NO QUEUE] Mail end at: ' . now());
+        Log::info('🟡 [NO QUEUE] Mail end at: ' . now());
 
         $tokenResult = $user->createToken('user-token');
         $tokenPlain = $tokenResult->plainTextToken;
