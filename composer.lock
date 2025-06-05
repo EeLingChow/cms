@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "aaca3c62f3db2dfe55e3917359ac8d4d",
+    "content-hash": "30003efd5754bf30bbbfa264c97f3a36",
     "packages": [
         {
             "name": "brick/math",
@@ -1249,40 +1249,43 @@
         },
         {
             "name": "laravel/horizon",
-            "version": "v5.8.0",
+            "version": "v5.32.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/horizon.git",
-                "reference": "89dd54d196383c3af586f72a518966937f06c7a3"
+                "reference": "e78d9689d85b3d4769dc64def5eb6d94e5776beb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/horizon/zipball/89dd54d196383c3af586f72a518966937f06c7a3",
-                "reference": "89dd54d196383c3af586f72a518966937f06c7a3",
+                "url": "https://api.github.com/repos/laravel/horizon/zipball/e78d9689d85b3d4769dc64def5eb6d94e5776beb",
+                "reference": "e78d9689d85b3d4769dc64def5eb6d94e5776beb",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "ext-pcntl": "*",
                 "ext-posix": "*",
-                "illuminate/contracts": "^8.17|^9.0",
-                "illuminate/queue": "^8.17|^9.0",
-                "illuminate/support": "^8.17|^9.0",
-                "nesbot/carbon": "^2.17",
-                "php": "^7.3|^8.0",
+                "illuminate/contracts": "^9.21|^10.0|^11.0|^12.0",
+                "illuminate/queue": "^9.21|^10.0|^11.0|^12.0",
+                "illuminate/support": "^9.21|^10.0|^11.0|^12.0",
+                "nesbot/carbon": "^2.17|^3.0",
+                "php": "^8.0",
                 "ramsey/uuid": "^4.0",
-                "symfony/error-handler": "^5.0|^6.0",
-                "symfony/process": "^5.0|^6.0"
+                "symfony/console": "^6.0|^7.0",
+                "symfony/error-handler": "^6.0|^7.0",
+                "symfony/polyfill-php83": "^1.28",
+                "symfony/process": "^6.0|^7.0"
             },
             "require-dev": {
                 "mockery/mockery": "^1.0",
-                "orchestra/testbench": "^6.0|^7.0",
-                "phpunit/phpunit": "^9.0",
-                "predis/predis": "^1.1"
+                "orchestra/testbench": "^7.0|^8.0|^9.0|^10.0",
+                "phpstan/phpstan": "^1.10",
+                "phpunit/phpunit": "^9.0|^10.4|^11.5",
+                "predis/predis": "^1.1|^2.0"
             },
             "suggest": {
                 "ext-redis": "Required to use the Redis PHP driver.",
-                "predis/predis": "Required when not using the Redis PHP driver (^1.1)."
+                "predis/predis": "Required when not using the Redis PHP driver (^1.1|^2.0)."
             },
             "type": "library",
             "extra": {
@@ -1295,7 +1298,7 @@
                     ]
                 },
                 "branch-alias": {
-                    "dev-master": "5.x-dev"
+                    "dev-master": "6.x-dev"
                 }
             },
             "autoload": {
@@ -1320,9 +1323,9 @@
             ],
             "support": {
                 "issues": "https://github.com/laravel/horizon/issues",
-                "source": "https://github.com/laravel/horizon/tree/v5.8.0"
+                "source": "https://github.com/laravel/horizon/tree/v5.32.1"
             },
-            "time": "2022-01-12T18:03:57+00:00"
+            "time": "2025-05-19T13:13:30+00:00"
         },
         {
             "name": "laravel/sanctum",
