@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use App\Notifications\NewUserRegistered;
 
@@ -26,7 +27,11 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        $user->notify(new NewUserRegistered($user));
+        //Log::info('🟡 [NO QUEUE] Mail start at: ' . now()); // testing without queue
+        for ($i = 0; $i < 10; $i++) {
+            $user->notify(new NewUserRegistered($user));
+        }
+        //Log::info('🟡 [NO QUEUE] Mail end at: ' . now());
 
         $tokenResult = $user->createToken('user-token');
         $tokenPlain = $tokenResult->plainTextToken;
